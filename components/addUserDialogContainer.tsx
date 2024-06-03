@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Box, Button } from '@mui/material';
 import AddUserDialog from './leicht/components/addUserDialog';
+import { User, USER_ROLE } from '../models/user';
 
 export default function AddUserDialogContainer() {
     const [users, setUsers] = useState<User[]>([

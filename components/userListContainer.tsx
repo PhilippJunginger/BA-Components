@@ -1,6 +1,6 @@
-import UserList from './leicht/components/userList.tsx';
 import { useState } from 'react';
-import { User, USER_ROLE } from '../../models/user.ts';
+import { User, USER_ROLE } from '../models/user';
+import UserList from './leicht/components/userList';
 
 export default function UserListContainer() {
     const [users, setUsers] = useState<User[]>([

@@ -11,8 +11,8 @@ import {
     Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { User, USER_ROLE } from '../../../../models/user.ts';
 import { Cancel } from '@mui/icons-material';
+import { User, USER_ROLE } from '../../../models/user';
 
 interface AddUserDialogProps {
     setUsers: (users: User[]) => void;
@@ -91,7 +91,9 @@ export default function CreateUserForm(props: AddUserDialogProps) {
                     <InputLabel>Role</InputLabel>
                     <Select label={'Role'} value={newUser.role} onChange={(e) => handleChange(e.target.value, 'role')}>
                         {Object.values(USER_ROLE).map((userRole) => (
-                            <MenuItem value={userRole}>{userRole}</MenuItem>
+                            <MenuItem key={userRole} value={userRole}>
+                                {userRole}
+                            </MenuItem>
                         ))}
                     </Select>
                 </FormControl>

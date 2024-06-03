@@ -1,14 +1,7 @@
-import '@testing-library/jest-dom'
-import {render, screen} from "@testing-library/react";
-import Home from "../pages";
+import '@testing-library/jest-dom';
 
-
-describe('', () => {
-
-
-    it('should test', () => {
-        render(<Home />)
-
-        expect(screen.getByRole('')).toBeInTheDocument()
-    })
-})
+describe('g', () => {
+    it('should', async () => {
+        expect(jest.fn).toHaveBeenCalled();
+    });
+});

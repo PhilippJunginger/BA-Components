@@ -4,7 +4,6 @@ import React from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import WorkIcon from '@mui/icons-material/Work';
 import RoomPreferencesIcon from '@mui/icons-material/RoomPreferences';
-import { useNavigate } from 'react-router-dom';
 
 export enum FORM_TYPE {
     PERSONAL_INFORMATION = 'personal',
@@ -22,11 +21,8 @@ interface ProgressProps {
 
 export default function Progress(props: ProgressProps) {
     const { progressItems } = props;
-    const navigate = useNavigate();
 
-    const handleProgressItemClick = (clickedType: FORM_TYPE) => {
-        navigate(`/forms/${clickedType}`);
-    };
+    const handleProgressItemClick = (clickedType: FORM_TYPE) => {};
 
     const getFormTypeIcon = (type: FORM_TYPE): React.JSX.Element => {
         switch (type) {

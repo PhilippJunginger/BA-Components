@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-// Eine einfache Funktion, die zufällige Wetterdaten generiert
 const fetchRandomWeatherData = () => {
     const weatherConditions = ['Sonnig', 'Regnerisch', 'Bewölkt', 'Schneefall', 'Stürmisch'];
     const temperature = Math.floor(Math.random() * 35);

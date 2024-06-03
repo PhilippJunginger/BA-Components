@@ -1,4 +1,3 @@
-import useGetHolidayList from '../../../hooks/useGetHolidayList.ts';
 import { useState } from 'react';
 import {
     Alert,
@@ -11,6 +10,7 @@ import {
     TableRow,
     TextField,
 } from '@mui/material';
+import useGetHolidayList from '../../../hooks/useGetHolidayList';
 
 export default function HolidayListWithSearch() {
     const { holidays, isError, isLoading } = useGetHolidayList();
