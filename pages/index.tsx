@@ -1,11 +1,14 @@
 import Lottospiel from '../components/mittel/lottospiel';
-
-('use-client');
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import React, { useState } from 'react';
-import AddUserForm from '../components/leicht/addUserForm';
-import { User } from '../models/user';
-import UserEmployeeList from '../components/leicht/userEmployeeList';
+import AddUserFormLeicht from '../components/leicht/addUserFormLeicht';
+import { User, USER_ROLE } from '../models/user';
+import UserEmployeeListLeicht from '../components/leicht/userEmployeeListLeicht';
+import AddUserFormMittel from '../components/mittel/addUserFormMittel';
+import UserEmployeeListMittel from '../components/mittel/userEmployeeListMittel';
+import UserEmployeeListSchwer from '../components/schwierig/userEmployeeListSchwer';
+
+('use-client');
 
 enum DIFFUCULTY {
     LEICHT = 'Leicht',
@@ -20,19 +23,30 @@ type Komponenten = {
 };
 
 export default function Home() {
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<User[]>([
+        {
+            name: 'Test',
+            role: USER_ROLE.CUSTOMER,
+            password: '123',
+            email: 'email@email.com',
+        },
+    ]);
     const [difficulty, setDifficulty] = useState<DIFFUCULTY>(DIFFUCULTY.LEICHT);
     const [component, setComponent] = useState<string>('');
 
     const Komponenten: Komponenten = {
         [DIFFUCULTY.LEICHT]: {
-            addUserDialog: <AddUserForm setUsers={setUsers} users={users} />,
-            userList: <UserEmployeeList fetchedUsers={users} />,
+            addUserForm: <AddUserFormLeicht key={users.length} setUsers={setUsers} users={users} />,
+            userList: <UserEmployeeListLeicht fetchedUsers={users} />,
         },
         [DIFFUCULTY.MITTEL]: {
             lottospiel: <Lottospiel />,
+            addUserForm: <AddUserFormMittel key={users.length} setUsers={setUsers} users={users} />,
+            userEmployeeList: <UserEmployeeListMittel fetchedUsers={users} />,
         },
-        [DIFFUCULTY.SCHWER]: {},
+        [DIFFUCULTY.SCHWER]: {
+            userEmployeeList: <UserEmployeeListSchwer />,
+        },
     };
 
     const handleDifficultyChange = (e: SelectChangeEvent) => {

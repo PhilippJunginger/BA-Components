@@ -25,7 +25,7 @@ interface UserListProps {
     fetchedUsers: User[];
 }
 
-export default function UserEmployeeList(props: UserListProps) {
+export default function UserEmployeeListLeicht(props: UserListProps) {
     const { fetchedUsers } = props;
 
     const [users, setUsers] = useState(fetchedUsers);

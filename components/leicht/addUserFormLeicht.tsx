@@ -7,20 +7,26 @@ interface AddUserDialogProps {
     users: User[];
 }
 
-const initialUser: User = { name: '', email: '', role: '' as USER_ROLE };
+const initialUser: User = { name: '', email: '', role: '' as USER_ROLE, password: '' };
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
-export default function AddUserForm(props: AddUserDialogProps) {
+export default function AddUserFormLeicht(props: AddUserDialogProps) {
     const { users, setUsers } = props;
     const [newUser, setNewUser] = useState<User>(initialUser);
     const [error, setError] = useState(false);
+    const [pwError, setPwError] = useState(false);
 
     const isNotCustomer = newUser.role === USER_ROLE.ADMIN || newUser.role === USER_ROLE.EMPLOYEE;
 
     const handleAddUser = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const emailAlreadyTaken = users.find((user) => user.email === newUser.email) !== undefined;
+        if (!passwordRegex.test(newUser.password)) {
+            setPwError(true);
+            return;
+        }
 
+        const emailAlreadyTaken = users.find((user) => user.email === newUser.email) !== undefined;
         if (emailAlreadyTaken) {
             setError(true);
             return;
@@ -38,7 +44,10 @@ export default function AddUserForm(props: AddUserDialogProps) {
     };
 
     return (
-        <form onSubmit={handleAddUser} style={{ width: 400, display: 'flex', flexDirection: 'column', columnGap: 1 }}>
+        <form
+            noValidate
+            onSubmit={handleAddUser}
+            style={{ width: 400, display: 'flex', flexDirection: 'column', columnGap: 1 }}>
             <TextField
                 required
                 sx={{ mt: 2 }}
@@ -55,6 +64,26 @@ export default function AddUserForm(props: AddUserDialogProps) {
                 error={error}
                 helperText={error && 'Email already exists!'}
             />
+
+            <TextField
+                required
+                sx={{ my: 2 }}
+                value={newUser.password}
+                label={'Password'}
+                onChange={(e) => handleChange(e.target.value, 'password')}
+                error={pwError}
+                helperText={
+                    pwError && (
+                        <ul>
+                            <li>Password needs to be 8 characters long</li>
+                            <li>Needs to contain at least one uppercase and one lowercase letter</li>
+                            <li>Needs to contain at least one digit</li>
+                            <li>Needs to contain at least one special character</li>
+                        </ul>
+                    )
+                }
+            />
+
             <FormControl required>
                 <InputLabel>Role</InputLabel>
                 <Select label={'Role'} value={newUser.role} onChange={(e) => handleChange(e.target.value, 'role')}>
@@ -68,7 +97,6 @@ export default function AddUserForm(props: AddUserDialogProps) {
 
             {isNotCustomer && (
                 <TextField
-                    required
                     sx={{ my: 2 }}
                     value={newUser.department}
                     label={'Department'}
