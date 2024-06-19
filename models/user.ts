@@ -10,3 +10,5 @@ export type User = {
     role: USER_ROLE;
     department?: string;
 };
+
+export type UserWithId = User & { id: string }

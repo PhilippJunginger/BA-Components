@@ -15,7 +15,9 @@ const config: Config = {
     coveragePathIgnorePatterns: ['.idea', '.next', '<rootDir>/__test__', 'node_modules', 'public'],
     setupFilesAfterEnv: ['<rootDir>/jest-setup.ts'],
     transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(ts|tsx)$'],
-
+    globals: {
+        fetch: global.fetch,
+    },
     // Add more setup options before each test is run
     // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };

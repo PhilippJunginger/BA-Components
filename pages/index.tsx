@@ -1,4 +1,3 @@
-import Lottospiel from '../components/mittel/lottospiel';
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import React, { useState } from 'react';
 import AddUserFormLeicht from '../components/leicht/addUserFormLeicht';
@@ -7,6 +6,9 @@ import UserEmployeeListLeicht from '../components/leicht/userEmployeeListLeicht'
 import AddUserFormMittel from '../components/mittel/addUserFormMittel';
 import UserEmployeeListMittel from '../components/mittel/userEmployeeListMittel';
 import UserEmployeeListSchwer from '../components/schwierig/userEmployeeListSchwer';
+import UserProfileCardLeicht from '../components/leicht/userProfileCardLeicht';
+import Lottospiel from '../components/mittel/draft/lottospiel';
+import UserProfileCardMittel from '../components/mittel/userProfileCardMittel';
 
 ('use-client');
 
@@ -22,6 +24,15 @@ type Komponenten = {
     [DIFFUCULTY.SCHWER]: Record<string, React.JSX.Element>;
 };
 
+export type UserProfile = {
+    id: string;
+    name: string;
+    email: string;
+    profileImageUrl: string;
+    registrationDate: Date;
+    lastLoginDate: Date;
+};
+
 export default function Home() {
     const [users, setUsers] = useState<User[]>([
         {
@@ -31,6 +42,14 @@ export default function Home() {
             email: 'email@email.com',
         },
     ]);
+    const [user, setUser] = useState<UserProfile | undefined>({
+        id: '123',
+        name: 'Test',
+        email: 'test@email.com',
+        profileImageUrl: '',
+        lastLoginDate: new Date(),
+        registrationDate: new Date(),
+    });
     const [difficulty, setDifficulty] = useState<DIFFUCULTY>(DIFFUCULTY.LEICHT);
     const [component, setComponent] = useState<string>('');
 
@@ -38,11 +57,37 @@ export default function Home() {
         [DIFFUCULTY.LEICHT]: {
             addUserForm: <AddUserFormLeicht key={users.length} setUsers={setUsers} users={users} />,
             userList: <UserEmployeeListLeicht fetchedUsers={users} />,
+            userProfileCard: user ? (
+                <UserProfileCardLeicht
+                    userProfile={user}
+                    setUserProfile={setUser}
+                    currentUser={{
+                        ...user,
+                        password: '123',
+                        role: USER_ROLE.EMPLOYEE,
+                    }}
+                />
+            ) : (
+                <></>
+            ),
         },
         [DIFFUCULTY.MITTEL]: {
             lottospiel: <Lottospiel />,
             addUserForm: <AddUserFormMittel key={users.length} setUsers={setUsers} users={users} />,
             userEmployeeList: <UserEmployeeListMittel fetchedUsers={users} />,
+            userProfileCard: user ? (
+                <UserProfileCardMittel
+                    userProfile={user}
+                    setUserProfile={setUser}
+                    currentUser={{
+                        ...user,
+                        password: '123',
+                        role: USER_ROLE.EMPLOYEE,
+                    }}
+                />
+            ) : (
+                <></>
+            ),
         },
         [DIFFUCULTY.SCHWER]: {
             userEmployeeList: <UserEmployeeListSchwer />,

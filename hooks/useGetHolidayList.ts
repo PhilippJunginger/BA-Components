@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-type Holiday = {
+export type Holiday = {
     country: string;
     iso: string;
     year: number;

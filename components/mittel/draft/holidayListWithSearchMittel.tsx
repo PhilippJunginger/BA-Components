@@ -10,15 +10,20 @@ import {
     TableRow,
     TextField,
 } from '@mui/material';
-import useGetHolidayList from '../../../hooks/useGetHolidayList';
+import useGetHolidayList from '../../hooks/useGetHolidayList';
+import { useRouter } from 'next/router';
 
-export default function HolidayListWithSearch() {
+export default function HolidayListWithSearchMittel() {
     const { holidays, isError, isLoading } = useGetHolidayList();
     const [search, setSearch] = useState<string>('');
+    const router = useRouter();
+    const countryQuery = router.query.country as string;
 
     const holidaysMatchingSearch =
-        holidays?.filter((holiday) =>
-            holiday.name.substring(0, search.length).toLowerCase().includes(search.toLowerCase()),
+        holidays?.filter(
+            (holiday) =>
+                holiday.name.substring(0, search.length).toLowerCase().includes(search.toLowerCase()) &&
+                holiday.country === countryQuery,
         ) ?? [];
 
     const handleOnChange = (value: string) => {

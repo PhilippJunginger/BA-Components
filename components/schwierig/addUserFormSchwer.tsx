@@ -14,6 +14,7 @@ import { FormEvent, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { User, USER_ROLE } from '../../models/user';
 import { useRouter } from 'next/router';
+import { PasswordError } from '../../models/passwordError';
 
 interface AddUserDialogProps {
     setUsers: (users: User[]) => void;
@@ -25,14 +26,6 @@ const uppercaseeRegex = /(?=.*[A-Z])/;
 const digitRegex = /(?=.*\d)/;
 const minLength = /.{8,}/;
 const specialCharRegex = /(?=.*[!@#$%^&*])/;
-
-type PasswordError = {
-    lowercaseLetter: boolean;
-    uppercaseLetter: boolean;
-    digit: boolean;
-    specialChar: boolean;
-    minLength: boolean;
-};
 
 export default function AddUserFormSchwer(props: AddUserDialogProps) {
     const { users, setUsers } = props;

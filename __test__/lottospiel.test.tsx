@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Lottospiel from '../components/mittel/lottospiel';
+
 import '@testing-library/jest-dom';
+import Lottospiel from '../components/mittel/draft/lottospiel';
 
 describe('Lottospiel component tests', () => {
     const user = userEvent.setup();
@@ -19,9 +20,9 @@ describe('Lottospiel component tests', () => {
     it('should allow adding a valid number and display it', async () => {
         const numberInput = screen.getByRole('textbox', { name: 'Enter Lotto number' });
         await user.type(numberInput, '15');
-        await user.click(screen.getByRole('button', { name: 'Add Number' }));
+        user.click(screen.getByRole('button', { name: 'Add Number' }));
 
-        expect(screen.getByText('15')).toBeInTheDocument();
+        expect(screen.findByRole('15')).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Start Draw' })).toBeNull();
     });
 
