@@ -1,5 +1,8 @@
+import NavigationLeicht, { RequestDto } from '../components/leicht/navigationLeicht';
+
+('use-client');
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import React, { useState } from 'react';
+import React, { createContext, useState } from 'react';
 import AddUserFormLeicht from '../components/leicht/addUserFormLeicht';
 import { User, USER_ROLE } from '../models/user';
 import UserEmployeeListLeicht from '../components/leicht/userEmployeeListLeicht';
@@ -10,8 +13,6 @@ import UserProfileCardLeicht from '../components/leicht/userProfileCardLeicht';
 import Lottospiel from '../components/mittel/draft/lottospiel';
 import UserProfileCardMittel from '../components/mittel/userProfileCardMittel';
 
-('use-client');
-
 enum DIFFUCULTY {
     LEICHT = 'Leicht',
     MITTEL = 'Mittel',
@@ -19,9 +20,9 @@ enum DIFFUCULTY {
 }
 
 type Komponenten = {
-    [DIFFUCULTY.LEICHT]: Record<string, React.JSX.Element>;
-    [DIFFUCULTY.MITTEL]: Record<string, React.JSX.Element>;
-    [DIFFUCULTY.SCHWER]: Record<string, React.JSX.Element>;
+    [DIFFUCULTY.LEICHT]: Record<string, React.JSX.Element | null>;
+    [DIFFUCULTY.MITTEL]: Record<string, React.JSX.Element | null>;
+    [DIFFUCULTY.SCHWER]: Record<string, React.JSX.Element | null>;
 };
 
 export type UserProfile = {
@@ -33,6 +34,13 @@ export type UserProfile = {
     lastLoginDate: Date;
 };
 
+export const UserContext = createContext({
+    name: 'Test',
+    role: USER_ROLE.CUSTOMER,
+    password: '123',
+    email: 'email@email.com',
+});
+
 export default function Home() {
     const [users, setUsers] = useState<User[]>([
         {
@@ -42,6 +50,7 @@ export default function Home() {
             email: 'email@email.com',
         },
     ]);
+
     const [user, setUser] = useState<UserProfile | undefined>({
         id: '123',
         name: 'Test',
@@ -52,6 +61,11 @@ export default function Home() {
     });
     const [difficulty, setDifficulty] = useState<DIFFUCULTY>(DIFFUCULTY.LEICHT);
     const [component, setComponent] = useState<string>('');
+    const [currentRequest, setCurrentRequest] = useState<RequestDto>({
+        id: '1',
+        requestType: 'customer',
+        data: {},
+    });
 
     const Komponenten: Komponenten = {
         [DIFFUCULTY.LEICHT]: {
@@ -67,8 +81,30 @@ export default function Home() {
                         role: USER_ROLE.EMPLOYEE,
                     }}
                 />
-            ) : (
-                <></>
+            ) : null,
+            navigationLeicht: (
+                <UserContext.Provider
+                    value={{
+                        name: 'Test',
+                        role: USER_ROLE.ADMIN,
+                        password: '123',
+                        email: 'email@email.com',
+                    }}>
+                    <NavigationLeicht
+                        navItems={[
+                            { requestId: '1', requestType: 'admin', name: 'AdminItem' },
+                            { requestId: '2', requestType: 'customer', name: 'CustomerItem' },
+                            { requestId: '3', requestType: 'employee', name: 'EmployeeItem' },
+                        ]}
+                        currentRequest={currentRequest}
+                        changeToRequest={async (value, key) => {
+                            setCurrentRequest({ ...currentRequest, [key]: value });
+                        }}
+                        handleRequestDeletion={async () => {
+                            new Error('Error');
+                        }}
+                    />
+                </UserContext.Provider>
             ),
         },
         [DIFFUCULTY.MITTEL]: {
