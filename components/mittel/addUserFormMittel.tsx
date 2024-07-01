@@ -4,8 +4,8 @@ import {
     Button,
     FormControl,
     FormHelperText,
+    FormLabel,
     IconButton,
-    InputLabel,
     MenuItem,
     Select,
     TextField,
@@ -157,8 +157,11 @@ export default function AddUserFormMittel(props: AddUserDialogProps) {
                 </FormControl>
 
                 <FormControl required>
-                    <InputLabel>Role</InputLabel>
-                    <Select label={'Role'} value={newUser.role} onChange={(e) => handleChange(e.target.value, 'role')}>
+                    <FormLabel id={'select-label'}>Role</FormLabel>
+                    <Select
+                        labelId={'select-label'}
+                        value={newUser.role}
+                        onChange={(e) => handleChange(e.target.value, 'role')}>
                         {Object.values(USER_ROLE).map((userRole) => (
                             <MenuItem key={userRole} value={userRole}>
                                 {userRole}

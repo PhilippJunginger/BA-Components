@@ -135,8 +135,8 @@ export default function UserEmployeeListSchwer() {
                     </RadioGroup>
                 </FormControl>
                 <FormControl>
-                    <FormLabel>Filter by Role</FormLabel>
-                    <Select value={filterRole} onChange={handleRoleFilterChange}>
+                    <FormLabel id={'select-label'}>Filter by Role</FormLabel>
+                    <Select labelId={'select-label'} value={filterRole} onChange={handleRoleFilterChange}>
                         <MenuItem value='all'>All</MenuItem>
                         {Object.values(USER_ROLE)
                             .filter((role) => role !== USER_ROLE.CUSTOMER)

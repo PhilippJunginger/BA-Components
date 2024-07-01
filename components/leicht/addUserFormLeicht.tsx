@@ -1,4 +1,4 @@
-import { Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Button, FormControl, FormHelperText, FormLabel, MenuItem, Select, TextField } from '@mui/material';
 import { FormEvent, useState } from 'react';
 import { User, USER_ROLE } from '../../models/user';
 
@@ -87,8 +87,11 @@ export default function AddUserFormLeicht(props: AddUserDialogProps) {
             </FormControl>
 
             <FormControl required>
-                <InputLabel>Role</InputLabel>
-                <Select label={'Role'} value={newUser.role} onChange={(e) => handleChange(e.target.value, 'role')}>
+                <FormLabel id={'select-label'}>Role</FormLabel>
+                <Select
+                    labelId={'select-label'}
+                    value={newUser.role}
+                    onChange={(e) => handleChange(e.target.value, 'role')}>
                     {Object.values(USER_ROLE).map((userRole) => (
                         <MenuItem key={userRole} value={userRole}>
                             {userRole}
