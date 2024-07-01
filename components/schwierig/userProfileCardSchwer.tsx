@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-    Box,
     Button,
     Card,
     CardActions,
@@ -8,7 +7,6 @@ import {
     CardMedia,
     Collapse,
     IconButton,
-    Input,
     Snackbar,
     TextField,
     Typography,
@@ -17,6 +15,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
 import { UserProfile } from '../../pages';
 import { UserWithId } from '../../models/user';
+import { useRouter } from 'next/router';
 
 interface UserProfileCardProps {
     userProfile: UserProfile;
@@ -30,6 +29,7 @@ export default function UserProfileCardSchwer(props: UserProfileCardProps) {
     const [editMode, setEditMode] = useState(false);
     const [editedUser, setEditedUser] = useState({ ...userProfile });
     const [snackbarMessage, setSnackbarMessage] = useState('');
+    const router = useRouter();
 
     const isCurrentUserProfile = currentUser.id === userProfile.id;
 
@@ -38,7 +38,12 @@ export default function UserProfileCardSchwer(props: UserProfileCardProps) {
     };
 
     const toggleEditMode = () => {
-        if (editMode && (editedUser.name !== userProfile.name || editedUser.email !== userProfile.email)) {
+        if (
+            editMode &&
+            (editedUser.name !== userProfile.name ||
+                editedUser.email !== userProfile.email ||
+                editedUser.profileImageUrl !== userProfile.profileImageUrl)
+        ) {
             setUserProfile({ ...editedUser });
             setSnackbarMessage('User edited successfully');
         }
@@ -59,13 +64,8 @@ export default function UserProfileCardSchwer(props: UserProfileCardProps) {
             return;
         }
 
-        if (file.size > 5242880) {
-            setSnackbarMessage('File size should be less than 5MB');
-            return;
-        }
-
-        if (!file.type.includes('jpeg') && !file.type.includes('png')) {
-            setSnackbarMessage('Only JPEG and PNG files are allowed');
+        if (file.size > 1048576) {
+            setSnackbarMessage('File size should be less than 1MB');
             return;
         }
 
@@ -78,7 +78,7 @@ export default function UserProfileCardSchwer(props: UserProfileCardProps) {
         })
             .then(async (response) => {
                 if (!response.ok || response.status < 200 || response.status >= 300) {
-                    return new Error('Failed to upload image');
+                    throw new Error('Failed to upload image');
                 }
 
                 const data = await response.json();
@@ -87,6 +87,10 @@ export default function UserProfileCardSchwer(props: UserProfileCardProps) {
             .catch(() => {
                 setSnackbarMessage('Failed to upload image');
             });
+    };
+
+    const handleProfilePageNavigation = async () => {
+        await router.push(`http://localhost:3000/user?id=${userProfile.id}`);
     };
 
     const handleCloseSnackbar = () => {
@@ -119,7 +123,7 @@ export default function UserProfileCardSchwer(props: UserProfileCardProps) {
         const registrationTime = new Date(userProfile.registrationDate).getTime();
         const currentTime = Date.now();
         const dayInMilliseconds = 24 * 60 * 60 * 1000;
-        return currentTime - registrationTime > dayInMilliseconds;
+        return currentTime - registrationTime < dayInMilliseconds;
     };
 
     return (
@@ -143,14 +147,10 @@ export default function UserProfileCardSchwer(props: UserProfileCardProps) {
                             value={editedUser.email}
                             onChange={(e) => handleEditUser(e.target.value, 'email')}
                         />
-                        <Box mt={2}>
-                            <Typography variant='body2'>Change Profile Picture:</Typography>
-                            <Input
-                                type='file'
-                                onChange={handleImageUpload}
-                                inputProps={{ accept: 'image/jpeg,image/png' }}
-                            />
-                        </Box>
+                        <Button sx={{ mt: 2 }} variant='contained' component='label'>
+                            Change Profile Picture
+                            <input type='file' hidden onChange={handleImageUpload} accept={'image/jpeg,image/png'} />
+                        </Button>
                     </>
                 ) : (
                     <>
@@ -168,6 +168,7 @@ export default function UserProfileCardSchwer(props: UserProfileCardProps) {
             </CardContent>
             <Collapse in={expanded} timeout='auto' unmountOnExit>
                 <CardContent>
+                    <Button onClick={handleProfilePageNavigation}>Show Profile Page</Button>
                     <Typography paragraph>
                         Registration Date: {new Date(userProfile.registrationDate).toLocaleDateString()}
                     </Typography>
@@ -188,8 +189,6 @@ export default function UserProfileCardSchwer(props: UserProfileCardProps) {
             )}
             <Snackbar
                 open={snackbarMessage.length > 0}
-                autoHideDuration={6000}
-                onClose={handleCloseSnackbar}
                 message={snackbarMessage}
                 action={
                     <IconButton size='small' aria-label='close' color='inherit' onClick={handleCloseSnackbar}>

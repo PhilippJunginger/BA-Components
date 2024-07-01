@@ -3,6 +3,7 @@ import {
     Box,
     Button,
     FormControl,
+    FormHelperText,
     IconButton,
     InputLabel,
     MenuItem,
@@ -33,33 +34,34 @@ type PasswordError = {
     minLength: boolean;
 };
 
+const initialUser = { name: '', email: '', role: '' as USER_ROLE, password: '' };
+
 export default function AddUserFormMittel(props: AddUserDialogProps) {
     const { users, setUsers } = props;
-    const [newUser, setNewUser] = useState<User>({ name: '', email: '', role: '' as USER_ROLE, password: '' });
+    const [newUser, setNewUser] = useState<User>(initialUser);
     const [error, setError] = useState(false);
     const [pwError, setPwError] = useState<PasswordError | undefined>(undefined);
 
+    const isPasswordError = pwError && Object.values(pwError).some((regexCheck) => regexCheck);
     const isNotCustomer = newUser.role === USER_ROLE.ADMIN || newUser.role === USER_ROLE.EMPLOYEE;
 
     const createUser = async () => {
-        return fetch('http://localhost:8080/user', { method: 'POST', body: JSON.stringify(newUser) })
-            .then(async (res) => {
+        return await fetch('http://localhost:8080/user', { method: 'POST', body: JSON.stringify(newUser) }).then(
+            async (res) => {
                 const response = await res.json();
                 if (res.status < 200 || res.status >= 300) {
                     throw response;
                 }
 
                 return response;
-            })
-            .catch(() => {
-                setError(true);
-            });
+            },
+        );
     };
 
     const handleAddUser = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (pwError && Object.values(pwError).some((regexCheck) => regexCheck)) {
+        if (isPasswordError) {
             return;
         }
 
@@ -74,6 +76,7 @@ export default function AddUserFormMittel(props: AddUserDialogProps) {
             await createUser();
             const updatedUserList = [...users, newUser];
             setUsers(updatedUserList);
+            setNewUser(initialUser);
         } catch (err) {
             setError(true);
         }
@@ -108,7 +111,7 @@ export default function AddUserFormMittel(props: AddUserDialogProps) {
                 <Alert
                     severity={'error'}
                     action={
-                        <IconButton onClick={() => setError(false)}>
+                        <IconButton aria-label={'close-icon'} onClick={() => setError(false)}>
                             <Cancel />
                         </IconButton>
                     }>
@@ -116,7 +119,7 @@ export default function AddUserFormMittel(props: AddUserDialogProps) {
                 </Alert>
             )}
 
-            <form onSubmit={handleAddUser} style={{ display: 'flex', flexDirection: 'column' }}>
+            <form noValidate onSubmit={handleAddUser} style={{ display: 'flex', flexDirection: 'column' }}>
                 <TextField
                     required
                     sx={{ mt: 2 }}
@@ -132,26 +135,26 @@ export default function AddUserFormMittel(props: AddUserDialogProps) {
                     onChange={(e) => handleChange(e.target.value, 'email')}
                 />
 
-                <TextField
-                    required
-                    sx={{ my: 2 }}
-                    value={newUser.password}
-                    label={'Password'}
-                    onChange={(e) => handleChange(e.target.value, 'password')}
-                    error={pwError && Object.values(pwError).some((regexCheck) => regexCheck)}
-                    helperText={
-                        pwError && (
+                <FormControl>
+                    <TextField
+                        required
+                        sx={{ my: 2 }}
+                        value={newUser.password}
+                        label={'Password'}
+                        onChange={(e) => handleChange(e.target.value, 'password')}
+                        error={isPasswordError}
+                    />
+                    {isPasswordError && (
+                        <FormHelperText component={'span'}>
                             <ul>
-                                {pwError.minLength && <li>Password needs to be 8 characters long</li>}
-                                {pwError.digit && <li>Needs to contain at least one digit</li>}
-                                {(pwError.uppercaseLetter || pwError.lowercaseLetter) && (
-                                    <li>Needs to contain at least one uppercase and one lowercase letter</li>
-                                )}
-                                {pwError.specialChar && <li>Needs to contain at least one special character</li>}
+                                <li>Password needs to be 8 characters long</li>
+                                <li>Needs to contain at least one uppercase and one lowercase letter</li>
+                                <li>Needs to contain at least one digit</li>
+                                <li>Needs to contain at least one special character</li>
                             </ul>
-                        )
-                    }
-                />
+                        </FormHelperText>
+                    )}
+                </FormControl>
 
                 <FormControl required>
                     <InputLabel>Role</InputLabel>

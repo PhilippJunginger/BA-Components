@@ -1,4 +1,4 @@
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { FormEvent, useState } from 'react';
 import { User, USER_ROLE } from '../../models/user';
 
@@ -65,24 +65,26 @@ export default function AddUserFormLeicht(props: AddUserDialogProps) {
                 helperText={error && 'Email already exists!'}
             />
 
-            <TextField
-                required
-                sx={{ my: 2 }}
-                value={newUser.password}
-                label={'Password'}
-                onChange={(e) => handleChange(e.target.value, 'password')}
-                error={pwError}
-                helperText={
-                    pwError && (
+            <FormControl>
+                <TextField
+                    required
+                    sx={{ my: 2 }}
+                    value={newUser.password}
+                    label={'Password'}
+                    onChange={(e) => handleChange(e.target.value, 'password')}
+                    error={pwError}
+                />
+                {pwError && (
+                    <FormHelperText component={'span'}>
                         <ul>
                             <li>Password needs to be 8 characters long</li>
                             <li>Needs to contain at least one uppercase and one lowercase letter</li>
                             <li>Needs to contain at least one digit</li>
                             <li>Needs to contain at least one special character</li>
                         </ul>
-                    )
-                }
-            />
+                    </FormHelperText>
+                )}
+            </FormControl>
 
             <FormControl required>
                 <InputLabel>Role</InputLabel>

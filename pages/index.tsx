@@ -10,8 +10,8 @@ import AddUserFormMittel from '../components/mittel/addUserFormMittel';
 import UserEmployeeListMittel from '../components/mittel/userEmployeeListMittel';
 import UserEmployeeListSchwer from '../components/schwierig/userEmployeeListSchwer';
 import UserProfileCardLeicht from '../components/leicht/userProfileCardLeicht';
-import Lottospiel from '../components/mittel/draft/lottospiel';
 import UserProfileCardMittel from '../components/mittel/userProfileCardMittel';
+import NavigationMittel from '../components/mittel/navigationMittel';
 
 enum DIFFUCULTY {
     LEICHT = 'Leicht',
@@ -34,7 +34,7 @@ export type UserProfile = {
     lastLoginDate: Date;
 };
 
-export const UserContext = createContext({
+export const UserContext = createContext<User>({
     name: 'Test',
     role: USER_ROLE.CUSTOMER,
     password: '123',
@@ -108,7 +108,6 @@ export default function Home() {
             ),
         },
         [DIFFUCULTY.MITTEL]: {
-            lottospiel: <Lottospiel />,
             addUserForm: <AddUserFormMittel key={users.length} setUsers={setUsers} users={users} />,
             userEmployeeList: <UserEmployeeListMittel fetchedUsers={users} />,
             userProfileCard: user ? (
@@ -121,8 +120,27 @@ export default function Home() {
                         role: USER_ROLE.EMPLOYEE,
                     }}
                 />
-            ) : (
-                <></>
+            ) : null,
+            navigationMittel: (
+                <UserContext.Provider
+                    value={{
+                        name: 'Test',
+                        role: USER_ROLE.ADMIN,
+                        password: '123',
+                        email: 'email@email.com',
+                    }}>
+                    <NavigationMittel
+                        navItems={[
+                            { requestId: '1', requestType: 'admin', name: 'AdminItem' },
+                            { requestId: '2', requestType: 'customer', name: 'CustomerItem' },
+                            { requestId: '3', requestType: 'employee', name: 'EmployeeItem' },
+                        ]}
+                        currentRequest={currentRequest}
+                        handleRequestDeletion={async () => {
+                            new Error('Error');
+                        }}
+                    />
+                </UserContext.Provider>
             ),
         },
         [DIFFUCULTY.SCHWER]: {

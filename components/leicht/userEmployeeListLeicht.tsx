@@ -15,7 +15,6 @@ import {
     Typography,
 } from '@mui/material';
 import BadgeIcon from '@mui/icons-material/Badge';
-import PersonIcon from '@mui/icons-material/Person';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import { User, USER_ROLE } from '../../models/user';
 import { Delete } from '@mui/icons-material';
@@ -38,7 +37,7 @@ export default function UserEmployeeListLeicht(props: UserListProps) {
                 (user) =>
                     (user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         user.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
-                    user.role !== USER_ROLE.EMPLOYEE,
+                    user.role !== USER_ROLE.CUSTOMER,
             )
             .sort((a, b) => a[sortBy].localeCompare(b[sortBy]));
     }, [users, searchTerm, sortBy]);
@@ -62,8 +61,6 @@ export default function UserEmployeeListLeicht(props: UserListProps) {
         switch (userRole) {
             case USER_ROLE.ADMIN:
                 return <BadgeIcon />;
-            case USER_ROLE.CUSTOMER:
-                return <PersonIcon />;
             case USER_ROLE.EMPLOYEE:
                 return <SupervisorAccountIcon />;
         }
@@ -87,21 +84,25 @@ export default function UserEmployeeListLeicht(props: UserListProps) {
                 <Alert severity={'info'}>There are no users matching the current search</Alert>
             )}
 
-            {!fetchedUsers.length && <Alert severity={'info'}>There are no users available</Alert>}
-
-            <List>
-                {filteredUsers.map((user) => (
-                    <ListItem key={user.email} aria-label={user.name}>
-                        <ListItemIcon>{getUserIcon(user.role)}</ListItemIcon>
-                        <ListItemText primary={user.name} secondary={user.email} />
-                        <ListItemButton aria-label={user.name} onClick={() => handleRemoveUserFromList(user.email)}>
-                            <ListItemIcon>
-                                <Delete />
-                            </ListItemIcon>
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
+            {!fetchedUsers.length ? (
+                <Alert severity={'info'}>There are no users available</Alert>
+            ) : (
+                <List>
+                    {filteredUsers.map((user) => (
+                        <ListItem key={user.email} aria-label={user.name}>
+                            <ListItemIcon>{getUserIcon(user.role)}</ListItemIcon>
+                            <ListItemText primary={user.name} secondary={user.email} />
+                            <ListItemButton
+                                aria-label={`delete-${user.name}`}
+                                onClick={() => handleRemoveUserFromList(user.email)}>
+                                <ListItemIcon>
+                                    <Delete />
+                                </ListItemIcon>
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
+            )}
         </Box>
     );
 }

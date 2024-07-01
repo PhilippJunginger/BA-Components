@@ -12,9 +12,9 @@ import {
     TextField,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CloseIcon from '@mui/icons-material/Close';
 import { UserProfile } from '../../pages';
 import { UserWithId } from '../../models/user';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface UserProfileCardProps {
     userProfile: UserProfile;
@@ -50,10 +50,6 @@ export default function UserProfileCardLeicht(props: UserProfileCardProps) {
         });
     };
 
-    const handleCloseSnackbar = () => {
-        setSnackbarMessage('');
-    };
-
     const handleDeleteUser = () => {
         setUserProfile(undefined);
     };
@@ -62,7 +58,11 @@ export default function UserProfileCardLeicht(props: UserProfileCardProps) {
         const registrationTime = new Date(userProfile.registrationDate).getTime();
         const currentTime = Date.now();
         const dayInMilliseconds = 24 * 60 * 60 * 1000;
-        return currentTime - registrationTime > dayInMilliseconds;
+        return currentTime - registrationTime < dayInMilliseconds;
+    };
+
+    const handleCloseSnackbar = () => {
+        setSnackbarMessage('');
     };
 
     return (
@@ -123,8 +123,6 @@ export default function UserProfileCardLeicht(props: UserProfileCardProps) {
             )}
             <Snackbar
                 open={snackbarMessage.length > 0}
-                autoHideDuration={6000}
-                onClose={handleCloseSnackbar}
                 message={snackbarMessage}
                 action={
                     <IconButton size='small' aria-label='close' color='inherit' onClick={handleCloseSnackbar}>

@@ -5,7 +5,7 @@ import { USER_ROLE } from '../../models/user';
 import { Delete } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 
-type RequestType = 'customer' | 'admin' | 'employee';
+export type RequestType = 'customer' | 'admin' | 'employee';
 
 export type RequestDto = {
     id: string;
@@ -13,7 +13,7 @@ export type RequestDto = {
     data: Record<string, any>;
 };
 
-type NavItem = {
+export type NavItem = {
     name: string;
     requestId: string;
     requestType: RequestType;
@@ -27,7 +27,7 @@ interface NavigationLeichtProps {
 }
 
 export default function NavigationLeicht(props: NavigationLeichtProps) {
-    const { navItems, currentRequest, changeToRequest } = props;
+    const { navItems, currentRequest, changeToRequest, handleRequestDeletion } = props;
 
     const [alert, setAlert] = useState<boolean>(false);
 
@@ -52,8 +52,8 @@ export default function NavigationLeicht(props: NavigationLeichtProps) {
         return currentRequest.data.name === name;
     };
 
-    const handleNavItemClick = async (value: string) => {
-        if (currentRequest.id === value) {
+    const handleNavItemClick = async (value: string, isCurrentItem: boolean) => {
+        if (isCurrentItem) {
             return;
         }
 
@@ -66,7 +66,7 @@ export default function NavigationLeicht(props: NavigationLeichtProps) {
 
     const handleDeleteNavItem = async (requestId: string) => {
         try {
-            await handleDeleteNavItem(requestId);
+            await handleRequestDeletion(requestId);
         } catch (err) {
             setAlert(true);
         }
@@ -79,7 +79,7 @@ export default function NavigationLeicht(props: NavigationLeichtProps) {
                     sx={{ mb: 3 }}
                     severity={'warning'}
                     action={
-                        <IconButton onClick={() => setAlert(false)}>
+                        <IconButton aria-label={'close-alert'} onClick={() => setAlert(false)}>
                             <CloseIcon />
                         </IconButton>
                     }>
@@ -106,8 +106,8 @@ export default function NavigationLeicht(props: NavigationLeichtProps) {
                     return (
                         <Tab
                             key={requestId}
-                            aria-label={isEmployeeUser ? requestId : requestType}
-                            onClick={() => handleNavItemClick(isEmployeeUser ? requestId : requestType)}
+                            aria-label={isEmployeeUser ? requestId : name}
+                            onClick={() => handleNavItemClick(isEmployeeUser ? requestId : requestType, isCurrentItem)}
                             value={isEmployeeUser ? requestId : requestType}
                             sx={{
                                 textTransform: 'none',
@@ -140,14 +140,22 @@ export default function NavigationLeicht(props: NavigationLeichtProps) {
                                     />
 
                                     {isCurrentItem && role === USER_ROLE.ADMIN && (
-                                        <IconButton
-                                            sx={{ ml: 2 }}
+                                        <Box
+                                            role={'button'}
+                                            aria-label={'delete-button'}
+                                            sx={{
+                                                ml: 2,
+                                                p: 1,
+                                                '&:hover': {
+                                                    backgroundColor: 'grey.500',
+                                                },
+                                            }}
                                             onClick={async (e) => {
                                                 e.stopPropagation();
                                                 await handleDeleteNavItem(requestId);
                                             }}>
                                             <Delete />
-                                        </IconButton>
+                                        </Box>
                                     )}
                                 </ListItem>
                             }
