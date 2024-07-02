@@ -7,7 +7,6 @@ import { USER_ROLE } from '../../../../../models/user';
 - critical eslint error: userEvent Promise not handled
 - critical best-practice: userEvent.setup not used
 - critical best-practice: Verwendung von fireEvent
-- 2-mal unnötige variablen erstellt
 - verwendung von unnötiger render funktion
 
 - 4 von 4 notwendigen Testfällen erreicht + 1 Ausnahme, da Test anderen Test ergänzt + 5 Redundanzen

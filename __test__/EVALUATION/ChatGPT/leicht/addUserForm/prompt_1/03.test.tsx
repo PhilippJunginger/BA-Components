@@ -7,7 +7,6 @@ import AddUserFormLeicht from '../../../../../components/leicht/addUserFormLeich
 - critical eslint error: userEvent Promise not handled
 - critical best-practice: userEvent.setup not used
 - critical best-practice: Verwendung von fireEvent
-- 2-mal unnötige variablen erstellt
 
 - 4 von 4 notwendigen Testfälen erreicht + 3 Redundanzen
 

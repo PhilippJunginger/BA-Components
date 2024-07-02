@@ -9,8 +9,6 @@ import AddUserFormLeicht from '../../../../../components/leicht/addUserFormLeich
 - critical best-practice: userEvent.setup not used
 - critical best-practice: Verwendung von fireEvent
 - unnecessary creation of render function
-- 3-mal unnötige variablen erstellt
-- Fehler in imports
 
 - 4 von 4 notwendigen Testfälen erreicht + 5 Redundanzen
 
