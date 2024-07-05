@@ -22,10 +22,10 @@ import {
 import { Delete, Edit, Badge, SupervisorAccount } from '@mui/icons-material';
 import { ChangeEvent, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import { User, USER_ROLE } from '../../models/user';
+import { USER_ROLE, UserNoPw } from '../../models/user';
 
 interface UserListProps {
-    fetchedUsers: User[];
+    fetchedUsers: UserNoPw[];
 }
 
 const rowsPerPage = 5;

@@ -16,12 +16,12 @@ import {
 } from '@mui/material';
 import BadgeIcon from '@mui/icons-material/Badge';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-import { User, USER_ROLE } from '../../models/user';
+import { USER_ROLE, UserNoPw } from '../../models/user';
 import { Delete } from '@mui/icons-material';
 import { ChangeEvent, useMemo, useState } from 'react';
 
 interface UserListProps {
-    fetchedUsers: User[];
+    fetchedUsers: UserNoPw[];
 }
 
 export default function UserEmployeeListLeicht(props: UserListProps) {

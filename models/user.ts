@@ -11,4 +11,6 @@ export type User = {
     department?: string;
 };
 
+export type UserNoPw = Omit<User, 'password'>
+
 export type UserWithId = User & { id: string }
