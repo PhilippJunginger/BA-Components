@@ -1,135 +1,161 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { useRouter } from 'next/router';
 import userEvent from '@testing-library/user-event';
 import { User, USER_ROLE } from '../../../../../../models/user';
 import AddUserFormSchwer from '../../../../../../components/schwierig/addUserFormSchwer';
 
 /*
-- fireEvent
 - userEvent.setup missing
-- assertions waitFOr
+- fireEvent
+- ts ignore comment
 
-- doppelung keine Variable - 2
-- typeError
+- doppelung keine Variable
+- doppelung screen
+- typeError - 4
 
-- 2 von 6 notwendigem Testumfang erreicht + 2 Redundazen
+- 4 von 6 notwendigem Testumfang erreicht + 2 Redundazen
 
 
 Best-Practices: -30
-CleanCode: -15
-Testumfang: 16,7
+CleanCode: -30
+Testumfang: 50,1
  */
 
-// Mock fetch API
-global.fetch = jest.fn() as jest.Mock;
+jest.mock('next/router', () => ({
+    useRouter: jest.fn(),
+}));
 
-describe('AddUserFormSchwer Component', () => {
-    const mockSetUsers = jest.fn();
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const mockedUsedRouter = useRouter;
 
-    const mockUsers: User[] = [
-        {
-            name: 'Existing User',
-            email: 'existing@example.com',
-            role: USER_ROLE.CUSTOMER,
-            password: 'securePassword123!',
-        },
-    ];
+const mockUsers: User[] = [
+    {
+        id: '1',
+        name: 'Test User 1',
+        email: 'test.user1@example.com',
+        role: USER_ROLE.CUSTOMER,
+        password: 'TestPassword1!',
+    },
+];
 
+const mockNewUser: User = {
+    name: 'New User',
+    email: 'new.user@example.com',
+    role: USER_ROLE.EMPLOYEE,
+    password: 'TestPassword123!',
+    department: 'Test Department',
+};
+
+describe('AddUserForm', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        mockedUsedRouter.mockImplementation(() => ({
+            push: jest.fn(),
+            query: {},
+        }));
+        jest.spyOn(global, 'fetch').mockResolvedValue({
+            status: 200,
+            json: () => Promise.resolve({ userId: '2' }),
+        });
     });
 
-    it('renders the form with correct initial values', () => {
-        render(<AddUserFormSchwer users={mockUsers} setUsers={mockSetUsers} />);
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('should render the form correctly', () => {
+        render(<AddUserFormSchwer setUsers={jest.fn()} users={[]} />);
 
         expect(screen.getByText('Create new User')).toBeInTheDocument();
-        expect(screen.getByLabelText('Name')).toHaveValue('');
-        expect(screen.getByLabelText('Email')).toHaveValue('');
-        expect(screen.getByLabelText('Password')).toHaveValue('');
-        expect(screen.getByLabelText('Role')).toHaveValue('');
+        expect(screen.getByLabelText('Name')).toBeInTheDocument();
+        expect(screen.getByLabelText('Email')).toBeInTheDocument();
+        expect(screen.getByLabelText('Password')).toBeInTheDocument();
+        expect(screen.getByText('Role')).toBeInTheDocument();
         expect(screen.getByText('Add User')).toBeInTheDocument();
     });
 
-    it('handles user input correctly', async () => {
-        render(<AddUserFormSchwer users={mockUsers} setUsers={mockSetUsers} />);
+    it('should handle user input correctly', async () => {
+        render(<AddUserFormSchwer setUsers={jest.fn()} users={[]} />);
 
-        const nameInput = screen.getByLabelText('Name');
-        const emailInput = screen.getByLabelText('Email');
-        const passwordInput = screen.getByLabelText('Password');
-        const roleSelect = screen.getByLabelText('Role');
-        const departmentInput = screen.getByLabelText('Department'); // This input is initially hidden
+        await userEvent.type(screen.getByLabelText('Name'), mockNewUser.name);
+        await userEvent.type(screen.getByLabelText('Email'), mockNewUser.email);
+        await userEvent.type(screen.getByLabelText('Password'), mockNewUser.password);
+        fireEvent.change(screen.getByLabelText('Role'), { target: { value: USER_ROLE.EMPLOYEE } });
 
-        // Type user data
-        await userEvent.type(nameInput, 'New User');
-        await userEvent.type(emailInput, 'new@example.com');
-        await userEvent.type(passwordInput, 'SecurePassword123!');
-        fireEvent.change(roleSelect, { target: { value: USER_ROLE.ADMIN } }); // Select a different role
-
-        // Department input should now be visible for ADMIN role
-        await waitFor(() => {
-            expect(departmentInput).toBeInTheDocument();
-        });
-
-        await userEvent.type(departmentInput, 'Sales');
+        expect(screen.getByLabelText('Name')).toHaveValue(mockNewUser.name);
+        expect(screen.getByLabelText('Email')).toHaveValue(mockNewUser.email);
+        expect(screen.getByLabelText('Password')).toHaveValue(mockNewUser.password);
+        expect(screen.getByLabelText('Role')).toHaveValue(USER_ROLE.EMPLOYEE);
     });
 
-    it('shows error for duplicate email', async () => {
-        render(<AddUserFormSchwer users={mockUsers} setUsers={mockSetUsers} />);
+    it('should display password validation errors', async () => {
+        render(<AddUserFormSchwer setUsers={jest.fn()} users={[]} />);
 
-        await userEvent.type(screen.getByLabelText('Name'), 'New User');
-        await userEvent.type(screen.getByLabelText('Email'), 'existing@example.com');
-        await userEvent.type(screen.getByLabelText('Password'), 'SecurePassword123!');
+        const invalidPassword = 'short';
+        await userEvent.type(screen.getByLabelText('Password'), invalidPassword);
+
+        expect(screen.getByText('Password needs to be 8 characters long')).toBeVisible();
+        expect(screen.getByText('Needs to contain at least one digit')).toBeVisible();
+        expect(screen.getByText('Needs to contain at least one uppercase and one lowercase letter')).toBeVisible();
+        expect(screen.getByText('Needs to contain at least one special character')).toBeVisible();
+    });
+
+    it('should display an error message if email is already taken', async () => {
+        render(<AddUserFormSchwer setUsers={jest.fn()} users={mockUsers} />);
+
+        await userEvent.type(screen.getByLabelText('Name'), mockUsers[0].name);
+        await userEvent.type(screen.getByLabelText('Email'), mockUsers[0].email);
+        await userEvent.type(screen.getByLabelText('Password'), mockNewUser.password);
         fireEvent.change(screen.getByLabelText('Role'), { target: { value: USER_ROLE.CUSTOMER } });
+
         await userEvent.click(screen.getByText('Add User'));
 
-        await waitFor(() => {
-            expect(screen.getByText('Es ist ein Fehler aufgetreten!')).toBeInTheDocument();
-        });
+        expect(screen.getByText('Es ist ein Fehler aufgetreten!')).toBeVisible();
     });
 
-    it('handles successful user creation', async () => {
-        const mockResponse = { userId: '123' };
-        fetch.mockResolvedValue({
-            ok: true,
-            json: async () => mockResponse,
-        });
-        const routerPushMock = jest.fn();
-        jest.spyOn(require('next/router'), 'useRouter').mockReturnValue({
-            push: routerPushMock,
-            query: { shouldRoute: 'false' }, // Initially no routing
-        } as any);
+    it('should add a new user on submit', async () => {
+        const setUsersMock = jest.fn();
+        render(<AddUserFormSchwer setUsers={setUsersMock} users={[]} />);
 
-        render(<AddUserFormSchwer users={mockUsers} setUsers={mockSetUsers} />);
-
-        await userEvent.type(screen.getByLabelText('Name'), 'New User');
-        await userEvent.type(screen.getByLabelText('Email'), 'new@example.com');
-        await userEvent.type(screen.getByLabelText('Password'), 'SecurePassword123!');
-        fireEvent.change(screen.getByLabelText('Role'), { target: { value: USER_ROLE.CUSTOMER } });
+        await userEvent.type(screen.getByLabelText('Name'), mockNewUser.name);
+        await userEvent.type(screen.getByLabelText('Email'), mockNewUser.email);
+        await userEvent.type(screen.getByLabelText('Password'), mockNewUser.password);
+        fireEvent.change(screen.getByLabelText('Role'), { target: { value: USER_ROLE.EMPLOYEE } });
+        await userEvent.type(screen.getByLabelText('Department'), mockNewUser.department);
         await userEvent.click(screen.getByText('Add User'));
 
-        await waitFor(() => {
-            expect(fetch).toHaveBeenCalledTimes(1);
-            expect(fetch).toHaveBeenCalledWith('http://localhost:8080/user', {
-                method: 'POST',
-                body: JSON.stringify({
-                    name: 'New User',
-                    email: 'new@example.com',
-                    role: USER_ROLE.CUSTOMER,
-                    password: 'SecurePassword123!',
-                }),
-            });
-            expect(mockSetUsers).toHaveBeenCalledWith([
-                ...mockUsers,
-                {
-                    name: 'New User',
-                    email: 'new@example.com',
-                    role: USER_ROLE.CUSTOMER,
-                    password: 'SecurePassword123!',
-                },
-            ]);
-            expect(routerPushMock).not.toHaveBeenCalled(); // No routing when shouldRoute is false
+        expect(fetch).toHaveBeenCalledWith('http://localhost:8080/user', {
+            method: 'POST',
+            body: JSON.stringify(mockNewUser),
         });
+
+        expect(setUsersMock).toHaveBeenCalledWith([
+            {
+                name: 'New User',
+                email: 'new.user@example.com',
+                role: 'EMPLOYEE',
+                password: 'TestPassword123!',
+                department: 'Test Department',
+            },
+        ]);
     });
 
-    // ... additional test cases for password validation, role selection, error scenarios, etc.
+    it('should redirect after adding a new user if shouldRoute is true', async () => {
+        mockedUsedRouter.mockImplementation(() => ({
+            push: jest.fn(),
+            query: { shouldRoute: 'true' },
+        }));
+
+        const setUsersMock = jest.fn();
+        render(<AddUserFormSchwer setUsers={setUsersMock} users={[]} />);
+
+        await userEvent.type(screen.getByLabelText('Name'), mockNewUser.name);
+        await userEvent.type(screen.getByLabelText('Email'), mockNewUser.email);
+        await userEvent.type(screen.getByLabelText('Password'), mockNewUser.password);
+        fireEvent.change(screen.getByLabelText('Role'), { target: { value: USER_ROLE.EMPLOYEE } });
+        await userEvent.type(screen.getByLabelText('Department'), mockNewUser.department);
+        await userEvent.click(screen.getByText('Add User'));
+
+        expect(mockedUsedRouter().push).toHaveBeenCalledWith('http://localhost:3000/users?id=2');
+    });
 });
