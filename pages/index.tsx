@@ -49,6 +49,18 @@ export default function Home() {
             password: '123',
             email: 'email@email.com',
         },
+        {
+            name: 'Employee',
+            role: USER_ROLE.EMPLOYEE,
+            password: '123',
+            email: 'Employee@email.com',
+        },
+        {
+            name: 'Admin',
+            role: USER_ROLE.ADMIN,
+            password: '123',
+            email: 'Admin@email.com',
+        },
     ]);
 
     const [user, setUser] = useState<UserProfile | undefined>({

@@ -22,13 +22,13 @@ import {
 import { Badge, Delete, Edit, Person, SupervisorAccount } from '@mui/icons-material';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import { User, USER_ROLE } from '../../models/user';
+import { USER_ROLE, UserNoPw } from '../../models/user';
 import { useQuery } from '@tanstack/react-query';
 
 const rowsPerPage = 5;
 
 export default function UserEmployeeListSchwer() {
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<UserNoPw[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState<'name' | 'email'>('name');
     const [filterRole, setFilterRole] = useState<USER_ROLE | 'all'>('all');
@@ -40,7 +40,7 @@ export default function UserEmployeeListSchwer() {
         data: fetchedUsers,
         isError,
         refetch,
-    } = useQuery<User[]>({
+    } = useQuery<UserNoPw[]>({
         queryKey: ['users'],
         queryFn: async () =>
             await fetch('http://localhost:8080/users').then(async (res) => {
