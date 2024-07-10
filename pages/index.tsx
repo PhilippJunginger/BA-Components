@@ -9,7 +9,7 @@ import UserEmployeeListLeicht from '../components/leicht/userEmployeeListLeicht'
 import AddUserFormMittel from '../components/mittel/addUserFormMittel';
 import UserEmployeeListMittel from '../components/mittel/userEmployeeListMittel';
 import UserEmployeeListSchwer from '../components/schwierig/userEmployeeListSchwer';
-import UserProfileCardLeicht from '../components/leicht/userProfileCardLeicht';
+import UserProfileCardLeicht, { UserProfile } from '../components/leicht/userProfileCardLeicht';
 import UserProfileCardMittel from '../components/mittel/userProfileCardMittel';
 import NavigationMittel from '../components/mittel/navigationMittel';
 
@@ -23,15 +23,6 @@ type Komponenten = {
     [DIFFUCULTY.LEICHT]: Record<string, React.JSX.Element | null>;
     [DIFFUCULTY.MITTEL]: Record<string, React.JSX.Element | null>;
     [DIFFUCULTY.SCHWER]: Record<string, React.JSX.Element | null>;
-};
-
-export type UserProfile = {
-    id: string;
-    name: string;
-    email: string;
-    profileImageUrl: string;
-    registrationDate: Date;
-    lastLoginDate: Date;
 };
 
 export const UserContext = createContext<User>({
@@ -90,7 +81,6 @@ export default function Home() {
                     currentUser={{
                         ...user,
                         password: '123',
-                        role: USER_ROLE.EMPLOYEE,
                     }}
                 />
             ) : null,

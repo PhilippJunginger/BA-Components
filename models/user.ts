@@ -13,4 +13,3 @@ export type User = {
 
 export type UserNoPw = Omit<User, 'password'>
 
-export type UserWithId = User & { id: string }

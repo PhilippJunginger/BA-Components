@@ -12,9 +12,24 @@ import {
     TextField,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { UserProfile } from '../../pages';
-import { UserWithId } from '../../models/user';
 import CloseIcon from '@mui/icons-material/Close';
+
+export type UserWithId = {
+    id: string;
+    name: string;
+    email: string;
+    password: string;
+    department?: string;
+};
+
+export type UserProfile = {
+    id: string;
+    name: string;
+    email: string;
+    profileImageUrl: string;
+    registrationDate: Date;
+    lastLoginDate: Date;
+};
 
 interface UserProfileCardProps {
     userProfile: UserProfile;
