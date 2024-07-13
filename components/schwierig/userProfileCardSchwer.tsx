@@ -13,9 +13,16 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
-import { UserProfile } from '../../pages';
-import { UserWithId } from '../../models/user';
 import { useRouter } from 'next/router';
+import { UserProfile } from '../leicht/userProfileCardLeicht';
+
+export type UserWithId = {
+    id: string;
+    name: string;
+    email: string;
+    password: string;
+    department?: string;
+};
 
 interface UserProfileCardProps {
     userProfile: UserProfile;
