@@ -16,9 +16,21 @@ import {
 } from '@mui/material';
 import BadgeIcon from '@mui/icons-material/Badge';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-import { USER_ROLE, UserNoPw } from '../../models/user';
 import { Delete } from '@mui/icons-material';
 import { ChangeEvent, useMemo, useState } from 'react';
+
+enum USER_ROLE {
+    CUSTOMER = 'CUSTOMER',
+    EMPLOYEE = 'EMPLOYEE',
+    ADMIN = 'ADMIN',
+}
+
+export type UserNoPw = {
+    name: string;
+    email: string;
+    role: USER_ROLE;
+    department?: string;
+};
 
 interface UserListProps {
     fetchedUsers: UserNoPw[];

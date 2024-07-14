@@ -10,7 +10,6 @@ import {
     IconButton,
     Snackbar,
     TextField,
-    Box,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';

@@ -22,7 +22,13 @@ import {
 import { Delete, Edit, Badge, SupervisorAccount } from '@mui/icons-material';
 import { ChangeEvent, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import { USER_ROLE, UserNoPw } from '../../models/user';
+import { UserNoPw } from '../../models/user';
+
+enum USER_ROLE {
+    CUSTOMER = 'CUSTOMER',
+    EMPLOYEE = 'EMPLOYEE',
+    ADMIN = 'ADMIN',
+}
 
 interface UserListProps {
     fetchedUsers: UserNoPw[];

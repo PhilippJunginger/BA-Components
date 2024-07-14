@@ -19,7 +19,7 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import { Badge, Delete, Edit, Person, SupervisorAccount } from '@mui/icons-material';
+import { Badge, Delete, Edit, SupervisorAccount } from '@mui/icons-material';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { USER_ROLE, UserNoPw } from '../../models/user';

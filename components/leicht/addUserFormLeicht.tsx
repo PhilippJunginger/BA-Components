@@ -1,6 +1,18 @@
 import { Button, FormControl, FormHelperText, FormLabel, MenuItem, Select, TextField } from '@mui/material';
 import { FormEvent, useState } from 'react';
-import { User, USER_ROLE } from '../../models/user';
+
+enum USER_ROLE {
+    CUSTOMER = 'CUSTOMER',
+    EMPLOYEE = 'EMPLOYEE',
+    ADMIN = 'ADMIN',
+}
+type User = {
+    name: string;
+    email: string;
+    password: string;
+    role: USER_ROLE;
+    department?: string;
+};
 
 interface AddUserDialogProps {
     setUsers: (users: User[]) => void;

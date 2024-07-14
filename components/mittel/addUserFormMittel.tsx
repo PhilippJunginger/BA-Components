@@ -13,12 +13,7 @@ import {
 } from '@mui/material';
 import { FormEvent, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
-import { User, USER_ROLE } from '../../models/user';
-
-interface AddUserDialogProps {
-    setUsers: (users: User[]) => void;
-    users: User[];
-}
+import { User } from '../../models/user';
 
 const lowercaseRegex = /(?=.*[a-z])/;
 const uppercaseeRegex = /(?=.*[A-Z])/;
@@ -33,6 +28,17 @@ type PasswordError = {
     specialChar: boolean;
     minLength: boolean;
 };
+
+enum USER_ROLE {
+    CUSTOMER = 'CUSTOMER',
+    EMPLOYEE = 'EMPLOYEE',
+    ADMIN = 'ADMIN',
+}
+
+interface AddUserDialogProps {
+    setUsers: (users: User[]) => void;
+    users: User[];
+}
 
 const initialUser = { name: '', email: '', role: '' as USER_ROLE, password: '' };
 

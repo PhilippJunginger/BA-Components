@@ -177,11 +177,9 @@ export default function UserProfileCardSchwer(props: UserProfileCardProps) {
                 <CardContent>
                     <Button onClick={handleProfilePageNavigation}>Show Profile Page</Button>
                     <Typography paragraph>
-                        Registration Date: {new Date(userProfile.registrationDate).toLocaleDateString()}
+                        Registration Date: {userProfile.registrationDate.toLocaleDateString()}
                     </Typography>
-                    <Typography paragraph>
-                        Last Login Date: {new Date(userProfile.lastLoginDate).toLocaleDateString()}
-                    </Typography>
+                    <Typography paragraph>Last Login Date: {userProfile.lastLoginDate.toLocaleDateString()}</Typography>
                 </CardContent>
             </Collapse>
             {isCurrentUserProfile && (
