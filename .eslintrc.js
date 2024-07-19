@@ -19,6 +19,9 @@ module.exports = {
             files: '__test__/**',
             plugins: ['testing-library'],
             extends: 'plugin:testing-library/react',
+            rules: {
+                'prefer-user-event': ['error', { allowedMethods: [] }],
+            },
         },
     ],
 };
