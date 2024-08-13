@@ -20,7 +20,7 @@ module.exports = {
             plugins: ['testing-library'],
             extends: 'plugin:testing-library/react',
             rules: {
-                'prefer-user-event': ['error', { allowedMethods: [] }],
+                'testing-library/prefer-user-event': ['error', { allowedMethods: [] }],
             },
         },
     ],

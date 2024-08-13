@@ -1,6 +1,4 @@
-import NavigationLeicht, { RequestDto } from '../components/leicht/navigationLeicht';
-
-('use-client');
+'use-client';
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import React, { createContext, useState } from 'react';
 import AddUserFormLeicht from '../components/leicht/addUserFormLeicht';
@@ -11,7 +9,6 @@ import UserEmployeeListMittel from '../components/mittel/userEmployeeListMittel'
 import UserEmployeeListSchwer from '../components/schwierig/userEmployeeListSchwer';
 import UserProfileCardLeicht, { UserProfile } from '../components/leicht/userProfileCardLeicht';
 import UserProfileCardMittel from '../components/mittel/userProfileCardMittel';
-import NavigationMittel from '../components/mittel/navigationMittel';
 
 enum DIFFUCULTY {
     LEICHT = 'Leicht',
@@ -64,11 +61,6 @@ export default function Home() {
     });
     const [difficulty, setDifficulty] = useState<DIFFUCULTY>(DIFFUCULTY.LEICHT);
     const [component, setComponent] = useState<string>('');
-    const [currentRequest, setCurrentRequest] = useState<RequestDto>({
-        id: '1',
-        requestType: 'customer',
-        data: {},
-    });
 
     const Komponenten: Komponenten = {
         [DIFFUCULTY.LEICHT]: {
@@ -84,30 +76,6 @@ export default function Home() {
                     }}
                 />
             ) : null,
-            navigationLeicht: (
-                <UserContext.Provider
-                    value={{
-                        name: 'Test',
-                        role: USER_ROLE.ADMIN,
-                        password: '123',
-                        email: 'email@email.com',
-                    }}>
-                    <NavigationLeicht
-                        navItems={[
-                            { requestId: '1', requestType: 'admin', name: 'AdminItem' },
-                            { requestId: '2', requestType: 'customer', name: 'CustomerItem' },
-                            { requestId: '3', requestType: 'employee', name: 'EmployeeItem' },
-                        ]}
-                        currentRequest={currentRequest}
-                        changeToRequest={async (value, key) => {
-                            setCurrentRequest({ ...currentRequest, [key]: value });
-                        }}
-                        handleRequestDeletion={async () => {
-                            new Error('Error');
-                        }}
-                    />
-                </UserContext.Provider>
-            ),
         },
         [DIFFUCULTY.MITTEL]: {
             addUserForm: <AddUserFormMittel key={users.length} setUsers={setUsers} users={users} />,
@@ -119,31 +87,9 @@ export default function Home() {
                     currentUser={{
                         ...user,
                         password: '123',
-                        role: USER_ROLE.EMPLOYEE,
                     }}
                 />
             ) : null,
-            navigationMittel: (
-                <UserContext.Provider
-                    value={{
-                        name: 'Test',
-                        role: USER_ROLE.ADMIN,
-                        password: '123',
-                        email: 'email@email.com',
-                    }}>
-                    <NavigationMittel
-                        navItems={[
-                            { requestId: '1', requestType: 'admin', name: 'AdminItem' },
-                            { requestId: '2', requestType: 'customer', name: 'CustomerItem' },
-                            { requestId: '3', requestType: 'employee', name: 'EmployeeItem' },
-                        ]}
-                        currentRequest={currentRequest}
-                        handleRequestDeletion={async () => {
-                            new Error('Error');
-                        }}
-                    />
-                </UserContext.Provider>
-            ),
         },
         [DIFFUCULTY.SCHWER]: {
             userEmployeeList: <UserEmployeeListSchwer />,

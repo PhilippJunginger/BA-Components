@@ -109,3 +109,9 @@ describe('AddUserFormLeicht Component', () => {
         expect(screen.queryByLabelText('Department')).not.toBeInTheDocument();
     });
 });
+
+// Schlägt fehl, da der eigentliche Labeltext 'Name *' wäre
+screen.getByLabelText('Name');
+
+// Erfolgreich, da zusätzliche Zeichen ignoriert werden
+screen.getByLabelText(/Name/i);
